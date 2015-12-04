@@ -1,0 +1,16 @@
+meteor mongo --url sortinghat.meteor.com
+
+mongodb://client-XXXXXXXX:XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX@production-db-d1.meteor.io:27017/lhead_meteor_com
+
+>> mongodb://client-9ff80e18:f05b8015-0c23-bf89-868c-66f00b645377@production-db-a2.meteor.io:27017/sortinghat_meteor_com
+
+mongodump -u client-XXXXXXXX -h production-db-d1.meteor.io -d lhead_meteor_com -p XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+
+
+mongodb://client-7eb47e7b:73255b43-b047-3f37-e913-d4fd77e1d4d1@production-db-a2.meteor.io:27017/sortinghat_meteor_com
+
+mongodump -u client-a1f86ec3 -h production-db-a2.meteor.io -d sortinghat_meteor_com -p 84d678fb-4d7b-725b-1fb6-d990f5f6366f
+
+mongodb://client-a1f86ec3:84d678fb-4d7b-725b-1fb6-d990f5f6366f@production-db-a2.meteor.io:27017/sortinghat_meteor_com
+
+mongodump -u client-a1f86ec3 -h production-db-a2.meteor.io -d sortinghat_meteor_com -p 84d678fb-4d7b-725b-1fb6-d990f5f6366f -o dump/membersFall1

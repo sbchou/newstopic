@@ -1,0 +1,183 @@
+<head>
+  <title>Sorting hat</title>
+  <meta name="viewport" content="width=device-width, user-scalable=no">
+  <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600' rel='stylesheet' type='text/css'> 
+</head>
+
+<body>
+  <div id="container"></div>
+     
+  <div class="outer">
+    {{> loginButtons}}
+
+    <div class="logo"></div>
+    <h1 class="title">SORTING HAT</h1>
+
+    {{> leaderboard}}  
+ 
+  </div>
+</body>
+ 
+
+<template name="leaderboard">
+ 
+     
+  {{#if currentUser}} <!-- gotta be logged in -->
+
+    <!-- progress bar is always at the top -->
+    <div class="progress">
+      <div class="progress-bar" role="progressbar" aria-valuenow={{completeCount}}
+        aria-valuemin="0" aria-valuemax="100" style="width:{{percent_complete}}%">
+        <span class>{{completeCount}}</span>
+
+      </div>  
+    </div> 
+ 
+
+
+    <!-- Admin always has opp to insert more. -->
+    <!--
+    {{#if isAdmin}}
+        <bold>Admin</bold>: do you want to add more entries?
+        <input type="file" id="files" name="files[]" multiple />
+        <output id="list"></output> 
+    {{/if}}
+    -->
+
+    {{#if noEntries}}
+      <center>
+        <h1>
+          Oops! Looks like you're out of articles.
+        </h1> 
+      </center>
+    {{/if}} <!-- end if for noEntries -->
+
+    {{#if allDone}}
+      <center>
+
+      <h2>Wow! You've read all the articles for today!</h2>
+      <h2>Super Job!</h2>
+
+      <h2>OVERVIEW</h2>
+        <h2> You've read {{completeCount}} articles. Great work! </h2>
+        <p>{{numTrue}} articles were U.S. Election related, and {{numFalse}} articles were unrelated.</p> 
+
+
+        <p>Sorting Hat thought {{numMachineTrue}} articles were U.S. Election related, and {{numMachineFalse}} articles were unrelated.</p> 
+
+
+        <p>Machine False Positives: {{falsePosCount}}</p> 
+        <p>Machine False Negatives: {{falseNegCount}}</p> 
+  
+        <h2>CORRECTIONS</h2>
+         {{#each falsePos}}
+          {{> result}}
+        {{/each}}
+
+
+         {{#each falseNeg}}
+          {{> result}}
+        {{/each}}
+       
+      </center>
+   {{/if}} <!-- end "allDone" -->
+
+
+    {{#if showStats}}
+
+      <button class="hideStats">Go Back to Reading</button>  
+      <center> 
+
+        <h2>OVERVIEW</h2>
+        <h2> You've read {{completeCount}} articles. Great work! </h2>
+        <p>{{numTrue}} articles were U.S. Election related, and {{numFalse}} articles were unrelated.</p> 
+
+
+        <p>Sorting Hat thought {{numMachineTrue}} articles were U.S. Election related, and {{numMachineFalse}} articles were unrelated.</p> 
+
+
+        <p>Machine False Positives: {{falsePosCount}}</p> 
+        <p>Machine False Negatives: {{falseNegCount}}</p> 
+  
+        <h2>CORRECTIONS</h2>
+        <!--
+        {{#each corrections}}
+          {{> result}}
+        {{/each}} 
+        -->
+  
+        {{#each falsePos}}
+          {{> result}}
+        {{/each}}
+ 
+        {{#each falseNeg}}
+         {{> result}} 
+        {{/each}}
+     
+      </center>
+
+    {{else}} <!-- allDone --> 
+      <!-- otherwise business as usual --> 
+
+      {{#each articles}} 
+
+       {{> article}}
+ 
+        {{#if selectedArticle}} 
+             <div class="details">  
+               <button class="no">No</button>
+              <button class="yes">Yes</button>  
+            </div> 
+        {{/if}}
+
+        {{else}}
+          <!-- do nothing -->
+      {{/each}}   
+    {{/if}} 
+
+  {{else}} <!-- not logged in!-->
+  <center>
+    <h1>Welcome human!</h1>
+    <p><h2>Can you teach Sorting Hat about the election?</h2></p>
+    <p><h2>Catch up on recent news stories about the election  
+    from top news outlets nation-wide, and help train our algorithm!</h2> </p> 
+  </center>
+  {{/if}}<!-- end if for logged-in-->
+</template>
+ 
+<template name="article">
+
+  <button class="showStats">S T A T S</button>  
+  <center><h1> Is this story about the U.S. Election? </h1></center>
+  <ul class="article {{selected}}">    
+    <span class="name">{{{title}}}</span>  
+    <span class="date">{{DateString date_written}}</span>  
+    <span class="description">{{{body_with_entities}}}</span> 
+
+  </ul>
+</template>
+
+<template name="humancheck">  
+    {{#if user_label}}
+      <input type="checkbox" disabled="disabled" checked="checked">  
+    {{else}}
+      <input type="checkbox" disabled="disabled"> 
+    {{/if}} 
+</template>
+
+<template name="result"> 
+  <ul class="article {{selected}}"> 
+    <h3>{{{article_title}}}</h3> 
+    {{#if user_label}} 
+      You said: Yes 
+    {{else}}
+      You said: No
+    {{/if}}
+    <br><br>
+      Sorting hat was {{article_conf}}% confident 
+    <br><br>
+    <button class="change">Change my answer</button> 
+    <p>Annotated: {{LocaleString timestamp}}</p>
+  </ul>
+</template>
+ 
