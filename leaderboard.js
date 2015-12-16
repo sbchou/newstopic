@@ -56,7 +56,7 @@ if (Meteor.isClient) {
       var currentUserId = Meteor.userId(); 
       // objects we haven't labeled yet. does this work?
       //IF NO MORE LEFT
-      p = Articles.findOne({'body':{$ne:''}, 'user_ids':{$ne:currentUserId}});
+      p = Articles.findOne({'body':{$ne:''}, 'user_ids':{$ne:currentUserId}, 'topics':{$exists:true,  $not: {$size: 0}}});
       if(typeof p === 'undefined'){
         console.log('NO MORE ARTICLES'); 
         return [];

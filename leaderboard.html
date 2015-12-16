@@ -148,9 +148,16 @@
 <template name="article">
 
   <button class="showStats">S T A T S</button>  
-  <center><h1> Is this story about the U.S. Election? </h1></center>
+  <center><h1> Is this story about {{topics}} ?</h1></center> 
   <ul class="article {{selected}}">    
+    
+    <center><img src="/img/names/{{org}}.png" width="300px" ></center>
     <span class="name">{{{title}}}</span>  
+    <!--
+    {{#each topics}}
+      {{this}}
+    {{/each}}
+    --> 
     <span class="date">{{DateString date_written}}</span>  
     <span class="description">{{{body_with_entities}}}</span> 
 
