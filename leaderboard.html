@@ -10,9 +10,11 @@
   <div class="outer">
     {{> loginButtons}}
 
+    <button class="showStats">S T A T S</button>  
+
     <div class="logo"></div>
     <h1 class="title">SORTING HAT</h1>
-
+ 
     {{> leaderboard}}  
  
   </div>
@@ -20,6 +22,7 @@
  
 
 <template name="leaderboard">
+
  
      
   {{#if currentUser}} <!-- gotta be logged in -->
@@ -121,13 +124,11 @@
 
       {{#each articles}} 
 
-       {{> article}}
  
-        {{#if selectedArticle}} 
-             <div class="details">  
-               <button class="no">No</button>
-              <button class="yes">Yes</button>  
-            </div> 
+
+       {{> article}}
+  
+        {{#if selectedArticle}}  
         {{/if}}
 
         {{else}}
@@ -144,33 +145,31 @@
   </center>
   {{/if}}<!-- end if for logged-in-->
 </template>
+
  
 <template name="article">
 
-  <button class="showStats">S T A T S</button>  
+ 
+
   <center><h1> Is this story about {{topics}} ?</h1></center> 
+  <div class="details">  
+   <button class="no">N O</button>
+  <button class="yes">Y E S</button>  
+        </div>  
   <ul class="article {{selected}}">    
-    
+
     <center><img src="/img/names/{{org}}.png" height="100px" ></center>
-    <span class="name">{{{title}}}</span>  
-    <!--
-    {{#each topics}}
-      {{this}}
-    {{/each}}
-    --> 
+    <span class="name">{{{title}}}</span>   
     <span class="date">{{DateString date_written}}</span>  
-    <span class="description">{{{body_with_entities}}}</span> 
+    <span class="date"><a href="{{url}}" target="_blank">Read the whole story</a></span> 
+ 
+
+    <span class="description">{{{body_with_entities}}}</span>  
+ 
 
   </ul>
 </template>
-
-<template name="humancheck">  
-    {{#if user_label}}
-      <input type="checkbox" disabled="disabled" checked="checked">  
-    {{else}}
-      <input type="checkbox" disabled="disabled"> 
-    {{/if}} 
-</template>
+ 
 
 <template name="result"> 
   <ul class="article {{selected}}"> 

@@ -12,6 +12,10 @@
 
 }
 
+img{
+  padding:10px;
+}
+
 body {
   font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 16px;
@@ -221,10 +225,12 @@ body {
 }
 
 .details .yes {
-  border-radius: 0.8em;
+  border-radius: 0.4em;
   border: #4099FF 1px solid;
-  background: transparent;
-  color: #4099FF;
+  background: #337ab7;
+  color: #fff;
+  /*background: aliceblue;
+  color: #4099FF;*/
   cursor: pointer; 
   font-family: 'Source Sans Pro' ,'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 2.5rem;
@@ -239,8 +245,9 @@ body {
 }
 
 .yes:hover {
-  background: #4099FF;
-  color: #fff;
+  /*background: #4099FF;
+  color: #fff;*/ 
+  color: #000099;
 }
 
 .yes:active {
@@ -255,10 +262,10 @@ body {
 
 .details .no {
   
-  border-radius: 0.8em;
+  border-radius: 0.4em;
   border: #4099FF 1px solid;
-  background: transparent;
-  color: #4099FF;
+  background: #337ab7;
+  color: #fff;
   cursor: pointer;
   font-family: 'Source Sans Pro' ,'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 2.5rem;
@@ -270,8 +277,9 @@ body {
 }
 
 .no:hover {
-  background: #4099FF;
-  color: #fff;
+  /*background: #4099FF;
+  color: #fff;*/ 
+  color:#000099;
 }
 
 .no:active {
@@ -313,9 +321,3 @@ body {
     background-color: #fefff4;
   }
 }
- 
-
-
-
-
-
