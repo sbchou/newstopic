@@ -9,8 +9,7 @@
      
   <div class="outer">
     {{> loginButtons}}
-
-    <button class="showStats">S T A T S</button>  
+ 
 
     <div class="logo"></div>
     <h1 class="title">SORTING HAT</h1>
@@ -27,6 +26,7 @@
      
   {{#if currentUser}} <!-- gotta be logged in -->
 
+
     <!-- progress bar is always at the top -->
     <div class="progress">
       <div class="progress-bar" role="progressbar" aria-valuenow={{completeCount}}
@@ -36,6 +36,7 @@
       </div>  
     </div> 
  
+    <button class="showSettings">SETTINGS</button>  
 
 
     <!-- Admin always has opp to insert more. -->
@@ -86,45 +87,20 @@
    {{/if}} <!-- end "allDone" -->
 
 
-    {{#if showStats}}
+    {{#if showSettings}}
 
-      <button class="hideStats">Go Back to Reading</button>  
-      <center> 
+      <button class="hideSettings">Go Back to Reading</button>  
+      <center> <h2>SETTINGS</h2> 
+      <h2> What sort of stories do you want to read?</h2>
 
-        <h2>OVERVIEW</h2>
-        <h2> You've read {{completeCount}} articles. Great work! </h2>
-        <p>{{numTrue}} articles were U.S. Election related, and {{numFalse}} articles were unrelated.</p> 
-
-
-        <p>Sorting Hat thought {{numMachineTrue}} articles were U.S. Election related, and {{numMachineFalse}} articles were unrelated.</p> 
-
-
-        <p>Machine False Positives: {{falsePosCount}}</p> 
-        <p>Machine False Negatives: {{falseNegCount}}</p> 
-  
-        <h2>CORRECTIONS</h2>
-        <!--
-        {{#each corrections}}
-          {{> result}}
-        {{/each}} 
-        -->
-  
-        {{#each falsePos}}
-          {{> result}}
-        {{/each}}
- 
-        {{#each falseNeg}}
-         {{> result}} 
-        {{/each}}
-     
       </center>
 
+
+      {{> settings}}  
+
     {{else}} <!-- allDone --> 
-      <!-- otherwise business as usual --> 
-
+      <!-- otherwise business as usual -->  
       {{#each articles}} 
-
- 
 
        {{> article}}
   
@@ -147,24 +123,24 @@
 </template>
 
  
-<template name="article">
-
+<template name="article">   
+  <center><h1> Is this story about {{topics}} ?</h1></center>
  
 
-  <center><h1> Is this story about {{topics}} ?</h1></center> 
   <div class="details">  
-   <button class="no">N O</button>
-  <button class="yes">Y E S</button>  
-        </div>  
-  <ul class="article {{selected}}">    
+    <button class="no">N O</button>
+    <button class="yes">Y E S</button>  
+
+  </div>  
+  <ul class="article {{selected}}">     
 
     <center><img src="/img/names/{{org}}.png" height="100px" ></center>
     <span class="name">{{{title}}}</span>   
     <span class="date">{{DateString date_written}}</span>  
     <span class="date"><a href="{{url}}" target="_blank">Read the whole story</a></span> 
  
-
-    <span class="description">{{{body_with_entities}}}</span>  
+    <span class="description">{{description}}</span>
+    <!--<span class="description">{{{body_with_entities}}}</span>-->
  
 
   </ul>
@@ -187,3 +163,36 @@
   </ul>
 </template>
  
+
+
+<template name="settings">
+  Your current topic selections:
+
+  {{currentUser.profile.topics}}
+
+  <form id="settings-form" action="action">
+ 
+   <input type="checkbox" name="owns" value="foreign policy/national security">foreign policy/national security<br/>
+   <input type="checkbox" name="owns" value="immigration">immigration<br/>
+   <input type="checkbox" name="owns" value="environment/energy">environment/energy<br/>
+   <input type="checkbox" name="owns" value="economy">economy<br/>
+   <input type="checkbox" name="owns" value="lgbt issues">lgbt issues<br/>
+   <input type="checkbox" name="owns" value="health care">health care<br/>
+   <input type="checkbox" name="owns" value="abortion">abortion<br/>
+   <input type="checkbox" name="owns" value="jobs/employment">jobs/employment<br/>
+   <input type="checkbox" name="owns" value="justice">justice<br/>
+   <input type="checkbox" name="owns" value="guns">guns<br/>
+   <input type="checkbox" name="owns" value="surveillance/privacy">surveillance/privacy<br/>
+   <input type="checkbox" name="owns" value="budget/taxation">budget/taxation<br/>
+   <input type="checkbox" name="owns" value="trade">trade<br/>
+   <input type="checkbox" name="owns" value="campaign finance">campaign finance<br/>
+   <input type="checkbox" name="owns" value="racial issues">racial issues<br/>
+   <input type="checkbox" name="owns" value="education">education<br/>
+   <input type="checkbox" name="owns" value="drugs">drugs<br/>
+   <input type="checkbox" name="owns" value="income inequality">income inequality<br/>
+   <input type="checkbox" name="owns" value="financial regulation">financial regulartion<br/>
+   <input type="checkbox" name="owns" value="ethics">ethics<br/>
+   <input type="checkbox" name="owns" value="personality">personality<br/>
+   <input type="submit"  value="send" />
+ </form>  
+</template>

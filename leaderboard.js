@@ -5,7 +5,6 @@ Articles = new Mongo.Collection("articles");
 Labels = new Mongo.Collection("labels");
 
 
-
 if (Meteor.isClient) { 
   var width = $(window).width() - 25; 
   $("#outer").width(width);
@@ -38,6 +37,7 @@ if (Meteor.isClient) {
       }, 200);
     }
   })
+ 
 
   // HANDLEBAR HELPERS!
   Template.registerHelper("DateString", function(timestamp) {
@@ -53,15 +53,19 @@ if (Meteor.isClient) {
   Template.leaderboard.helpers({
 
     articles: function () {
-      var currentUserId = Meteor.userId(); 
-      // objects we haven't labeled yet. does this work?
-      //IF NO MORE LEFT
-      p = Articles.findOne({'body':{$ne:''}, 'user_ids':{$ne:currentUserId}, 'topics':{$exists:true,  $not: {$size: 0}}});
+      var currentUserId = Meteor.userId();    
+
+      p = Articles.findOne({'body':{$ne:''},
+            'user_ids':{$ne:currentUserId},
+            'topics':{$exists:true,$not: {$size: 0},
+                     $in: Meteor.user().profile.topics}});
+ 
       if(typeof p === 'undefined'){
         console.log('NO MORE ARTICLES'); 
-        return [];
+        Session.set("allDone", true);
       }
       else{      
+        Session.set("allDone", false); 
         Session.set("selectedArticle", p._id);   
         return [ p ];
       }
@@ -76,7 +80,8 @@ if (Meteor.isClient) {
     },
 
     allDone: function (){
-    return Articles.find({'user_ids':{$ne : Meteor.userId()}, body:{$ne:''}}).count() === 0;
+      return Session.get("allDone");
+    //return Articles.find({'user_ids':{$ne : Meteor.userId()}, body:{$ne:''}}).count() === 0;
     },
 
     selectedArticle: function () {
@@ -87,12 +92,20 @@ if (Meteor.isClient) {
     completeCount: function (){
       return Articles.find({'user_ids': Meteor.userId()}).count()
     },
-    totalCount: function (){
-      return Articles.find({}).count()
+    totalCount: function (){ 
+      return Articles.find({'body':{$ne:''},
+            'user_ids':{$ne:Meteor.userId()},
+            'topics':{$exists:true,$not: {$size: 0},
+                     $in: Meteor.user().profile.topics}}).count(); 
+      //return Articles.find({}).count()
     },
     percent_complete: function(){
       var completed = Articles.find({'user_ids': Meteor.userId()}).count();
-      var total = Articles.find({'body':{$ne:''}}).count();
+      //var total = Articles.find({'body':{$ne:''}}).count();
+      var total = Articles.find({'body':{$ne:''},
+            'user_ids':{$ne:Meteor.userId()},
+            'topics':{$exists:true,$not: {$size: 0},
+                     $in: Meteor.user().profile.topics}}).count(); 
       return Math.round(( completed / total ) * 100);
     },
 
@@ -163,8 +176,8 @@ if (Meteor.isClient) {
       return bools;
     },
 
-    showStats: function(){
-      return Session.get('showStats');
+    showSettings: function(){
+      return Session.get('showSettings');
     }
 
   });
@@ -202,12 +215,13 @@ if (Meteor.isClient) {
       $("#leaderboard").load(location.href + " #leaderboard");
     },
 
-    'click .showStats': function () {
-        Session.set("showStats", true);   
+    'click .showSettings': function () {
+        Session.set("showSettings", true);
+        console.log("SHOW")   
     },
 
-    'click .hideStats': function () {
-        Session.set("showStats", false);   
+    'click .hideSettings': function () {
+        Session.set("showSettings", false);   
     },
  
     'click .yes': function () {
@@ -266,25 +280,117 @@ if (Meteor.isClient) {
       });
 
       $("#leaderboard").load(location.href + " #leaderboard");
+    },
+
+    'click .heart': function () {
+      console.log('you heart it!');
+    },
+
+    'click .email': function () {
+      var topics = Meteor.user().profile['topics'];
+      var html = '';
+      for (var i = 0; i < topics.length; i++) {
+        html += topics[i] + "<br>";
+      }
+ 
+
+      Meteor.call('sendEmail',
+            'sbchou@gmail.com',
+            'wizard@sortinghat.com',
+            'Hello from Sorting Hat!',
+            'Hello world',
+             html)
+      console.log('you sent an email!');
     }
+  
   });
+
 
   Template.article.helpers({
     selected: function () {
       return Session.equals("selectedArticle", this._id) ? "selected" : '';
     }
   });  
+
+
+  Template.settings.events({
+   'submit #settings-form' : function (event, template) {
+     event.preventDefault();
+
+     var selected = template.findAll( "input[type=checkbox]:checked");
+
+     var array = _.map(selected, function(item) {
+       return item.defaultValue;
+     });
+     Meteor.users.update({_id:Meteor.user()._id}, { $set: {'profile.topics': array} });
+
+     console.log(Meteor.user().profile['topics']);
+
+   }
+  });
+
+
  }
 
+ 
+
 // On server startup, get last 20 articles
-if (Meteor.isServer) {
+if (Meteor.isServer) { 
+    process.env.MAIL_URL = "smtp://postmaster@sandboxe30f4a212c2043d98e278fb247831889.mailgun.org:4439319b0ce107ef952c6515064a81b8@smtp.mailgun.org:587";
+    /**
+       PrettyEmail.options = {
+        from: 'support@mycompany.com',
+        logoUrl: 'http://mycompany.com/logo.png',
+        companyName: 'myCompany',
+        companyUrl: 'http://mycompany.com',
+        companyAddress: '123 Street, ZipCode, City, Country',
+        companyTelephone: '+1234567890',
+        companyEmail: 'support@mycompany.com',
+        siteName: 'mycompany'
+      };
+
+      PrettyEmail.send('call-to-action', {
+        to: 'sbchou@gmail.com',
+        subject: 'You got new message',
+        heading: 'Your friend sent you a message',
+        message: 'Click the button below to read the message',
+        buttonText: 'Read message',
+        buttonUrl: 'http://mycompany.com/messages/2314'
+      });
+    **/
+// ---
+// generated by coffee-script 1.9.2
+
+// ---
+// generated by coffee-script 1.9.2
+
+    // In your server code: define a method that the client can call
+    Meteor.methods({
+ 
+
+      sendEmail: function (to, from, subject, text, html) {
+        check([to, from, subject, text, html], [String]);
+
+        // Let other method calls from the same client start running,
+        // without waiting for the email sending to complete.
+        this.unblock();
+
+        Email.send({
+          to: to,
+          from: from,
+          subject: subject,
+          text: text,
+          html: html
+        });
+      }
+    });  
 
     Meteor.publish('theArticles', function(){
       var currentUserId = this.userId; 
       //return Articles.find({}); 
-      //return Articles.find({'user_id':{$ne : currentUserId}, body:{$ne:''}}, {skip:0, limit: 20}); 
+      return Articles.find({'user_id':{$ne : currentUserId}, body:{$ne:''}}, {sort: {date_written: -1 }}); 
       //n o limit
-      return Articles.find({'user_id':{$ne : currentUserId}, body:{$ne:''}}); 
+      //return Articles.find({'user_id':{$ne : currentUserId}, body:{$ne:''}}); 
     });
 
     Meteor.publish('theLabels', function(){
